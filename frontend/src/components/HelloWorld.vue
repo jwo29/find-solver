@@ -1,19 +1,14 @@
 <template>
-  <div>
-    <!-- 메인 화면 윗부분(변하지 않음) -->
-    <div> 
-      <h1>is solved..?</h1>
-      <div>
-        <input type="text" placeholder="문제번호">
-        <button>검색</button>
-      </div>
+  <div id="main-wrapper">
+    <!-- 검색 부분 -->
+    <div id="search-section">
+      <input id="search-input" v-model="problem_no" type="text" placeholder="문제번호">
+      <p>Check {{ problem_no }} is solved in SCV</p>
     </div>
-
+    
     <!-- 검색 결과 부분 -->
-    <div>
-      테이블 위
-      <user-table></user-table>
-      테이블 아래
+    <div id="result-section">
+      <user-table :problem_no="problem_no"></user-table>
     </div>
   </div>
 </template>
@@ -24,9 +19,12 @@ import UserTable from './UserTable.vue'
 export default {
   components: { UserTable },
   name: 'HelloWorld',
-  props: {
-    msg: String
-  }
+  el: "#search-input",
+  data() {
+    return {
+      problem_no: "",
+    }
+  },
 }
 </script>
 
