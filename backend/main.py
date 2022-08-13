@@ -1,20 +1,18 @@
 import json
 
 from fastapi import FastAPI
+
 from starlette.middleware.cors import CORSMiddleware
 # from fastapi.responses import HTMLResponse, FileResponse
-from pydantic import BaseModel
+
+from fastapi.responses import FileResponse, JSONResponse
+from starlette.middleware.cors import CORSMiddleware
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
 
 app = FastAPI()
-
-
-class User(BaseModel):
-    uid: str
-    solved: list
 
 
 origins = [
@@ -31,9 +29,11 @@ app.add_middleware(
 
 
 @app.get("/")
-async def main():
-    return {"message": "Hello World"}
+async def home():
+    return "hello"
 
+
+# 멤버 갱신
 @app.get("/member")
 async def updateMemeber():
 
@@ -76,7 +76,7 @@ async def updateMemeber():
         json.dump(members, outfile, ensure_ascii=False)
     
 
-
+# 푼 문제 갱신
 @app.get("/problem")
 async def updateProblem():
 
@@ -117,3 +117,4 @@ async def updateProblem():
         json.dump(solveds, outfile)    
 
     return 'success'
+

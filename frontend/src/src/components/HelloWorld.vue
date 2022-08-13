@@ -1,14 +1,19 @@
 <template>
-  <div id="main-wrapper">
-    <!-- 검색 부분 -->
-    <div id="search-section">
-      <input id="search-input" v-model="problem_no" type="text" placeholder="문제번호">
-      <p>Check {{ problem_no }} is solved in SCV</p>
+  <div>
+    <!-- 메인 화면 윗부분(변하지 않음) -->
+    <div> 
+      <h1>is solved..?</h1>
+      <div>
+        <input id="search-input" v-model="pno" type="text" placeholder="문제번호">
+        <p>현재 입력 문제번호: {{ pno }}</p>
+      </div>
     </div>
-    
+
     <!-- 검색 결과 부분 -->
-    <div id="result-section">
-      <user-table :problem_no="problem_no"></user-table>
+    <div>
+      테이블 위
+      <user-table :pno="pno"></user-table>
+      테이블 아래
     </div>
   </div>
 </template>
@@ -22,7 +27,7 @@ export default {
   el: "#search-input",
   data() {
     return {
-      problem_no: "",
+      pno: "",
     }
   },
 }
