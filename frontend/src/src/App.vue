@@ -1,20 +1,15 @@
 <template>
-  <div>
-    <header-view></header-view>
-    <hello-world></hello-world>
-    <!-- 푸터 -->
-  </div>
+  <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
+  <hello-world></hello-world>
 </template>
 
 <script>
-import HeaderView from './components/HeaderView.vue'
 import HelloWorld from './components/HelloWorld.vue'
 
 export default {
   name: 'App',
   components: {
-    HeaderView,
-    HelloWorld,
+    HelloWorld
   }
 }
 </script>
