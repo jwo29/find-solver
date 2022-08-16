@@ -16,7 +16,9 @@ app = FastAPI()
 
 
 origins = [
-    "http://localhost:8080"
+    "http://localhost",
+    "http://localhost:8080",
+    # "https://gist.githubusercontent.com/jwo29/f19f815b9bdf216c9590d6678c067b0d/raw/3f9229d7c26484d5b3c676241c3f5b9e1d1c28f6/test.json"
 ]
 
 app.add_middleware(
@@ -33,8 +35,27 @@ async def home():
     return "hello"
 
 
+@app.get("/solver")
+async def test():
+    # return FileResponse('./backend/data/solved-db.json', media_type="application/json")
+    # return FileResponse('./backend/data/test.json', media_type="application/json")
+    return JSONResponse([
+        {
+            "id": "user1",
+            "solved": ["1000", "1001", "2000", "2001"]
+        },
+        {
+            "id": "user2",
+            "solved": ["2000", "2002"]
+        },
+        {
+            "id": "user3",
+            "solved": ["1000", "2001", "2002"]
+        }
+    ])
+
 # 멤버 갱신
-@app.get("/member")
+@app.post("/member")
 async def updateMemeber():
 
     options = webdriver.ChromeOptions()
@@ -72,12 +93,12 @@ async def updateMemeber():
         )
         
     # dump 저장 시 한글 깨짐 현상 해결: ensure_ascii=False
-    with open('./member-db.json', 'w', encoding='utf-8') as outfile:
+    with open('./backend/data/member-db.json', 'w', encoding='utf-8') as outfile:
         json.dump(members, outfile, ensure_ascii=False)
     
 
 # 푼 문제 갱신
-@app.get("/problem")
+@app.post("/problem")
 async def updateProblem():
 
     options = webdriver.ChromeOptions()
@@ -99,7 +120,7 @@ async def updateProblem():
 
             problems = element.text
             problems = problems.split(' ')
-            problems = list(map(int, problems))
+            problems = list(map(str, problems))
 
             # print(problems)
 
@@ -113,8 +134,21 @@ async def updateProblem():
     # close file
     
     # solved-db.json으로 저장
-    with open('./solved-db.json', 'w', encoding='utf-8') as outfile:
-        json.dump(solveds, outfile)    
+    with open('./backend/data/solved-db.json', 'w', encoding='utf-8') as outfile:
+        json.dump(solveds, outfile, ensure_ascii=False)    
 
     return 'success'
 
+@app.post("/test")
+async def test():
+    print('test!!!!!')
+    return JSONResponse([
+        {
+            "id": "user1",
+            "solved": ["1000", "1001", "2000"]
+        },
+        {
+            "id": "user2",
+            "solved": ["2000", "2002"]
+        }
+    ])
