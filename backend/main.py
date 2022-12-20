@@ -1,14 +1,10 @@
-from datetime import datetime
 from fastapi import FastAPI
-
-from starlette.middleware.cors import CORSMiddleware
-# from fastapi.responses import HTMLResponse, FileResponse
-
 from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
 
 from service.boj_crawler import *
 from service.search_solver import search_solver
+from service.time_service import get_last_udt
 
 app = FastAPI()
 
@@ -40,36 +36,32 @@ async def home():
 async def get_solver(problem_no: str):
     # do something
 
-    solvers = search_solver(problem_no)
+    result = search_solver(problem_no)
 
-    return JSONResponse({
-        'result': 1 if solvers else 0,
-        'solver_num': len(solvers),
-        'solvers': solvers
-    })
+    return JSONResponse(result)
 
 
 # 멤버 갱신
 @app.post("/members")
 def update_member():
 
-    last_update_time = str(datetime.now())
-
     result = member_crawler()
 
-    return JSONResponse({
-        'last_update_time': last_update_time
-    })
+    return JSONResponse(result)
 
 
 # 푼 문제 갱신
 @app.post("/problems")
 def update_problem():
 
-    last_update_time = str(datetime.now())
-
     result = problem_crawler()
 
-    return JSONResponse({
-        'last_update_time': last_update_time
-    })
+    return JSONResponse(result)
+
+# 마지막 업데이트 시간 얻기
+@app.get("/lastUpdateTime")
+def get_update_time():
+
+    result = get_last_udt()
+
+    return JSONResponse(result)
