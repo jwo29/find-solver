@@ -5,9 +5,9 @@
             <button class="menu-button" v-on:click="updateProblem">Update Solved Problems</button>
         </div>
         <div id="main">
-            <h1 id="main-title">IS IT SOLVED?</h1>
+            <h1 id="main-title"><a class="link-tag" href="/">IS IT SOLVED?</a></h1>
             <div class="search-section">
-                <input type="text" @change="input" @keyup.enter="searchSolver" placeholder="BOJ 문제 번호">
+                <input type="text" @change="input" @keyup.enter="searchSolver" placeholder="BOJ 문제 번호를 입력하세요">
                 <!-- <button v-on:click="searchSolver">검색</button> -->
                 <img class="search-icon" src="../assets/search.png" v-on:click="searchSolver">
             </div>
@@ -18,7 +18,7 @@
             </p>
         </div>
         <div id="side">
-            <BoardView :searchResult="searchResult"></BoardView>
+            <BoardView :searchResult="searchResult" :problemNo="problemNo"></BoardView>
         </div>
     </div>
 </template>
