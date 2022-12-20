@@ -2,11 +2,12 @@ import json
 import logging
 import schedule
 
+from datetime import datetime
+
 from selenium import webdriver
 from selenium.common import SessionNotCreatedException
 from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
-
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())
@@ -15,10 +16,15 @@ logger.addHandler(logging.StreamHandler())
 # https://www.acmicpc.net/group/ranklist/9848
 GROUP_ID = 9848
 
+date_format = "%Y.%m.%d %H:%M:%S"
 
 def member_crawler():
-
+    result_obj = {}
     result_msg = ""
+
+    # 멤버 정보를 json 포맷으로 저장
+    member_db = {}
+    members = []  # member_db['members'] = members
 
     options = webdriver.ChromeOptions()
     options.add_argument("headless")
@@ -28,15 +34,16 @@ def member_crawler():
 
     # apt install chromium-chromedriver
     try:
+        
+        # 마지막 업데이트 시간 갱신
+        member_db['last_update_time'] = datetime.now().strftime(date_format)
+
         driver = webdriver.Chrome(options=options)
         driver.get("https://www.acmicpc.net/group/ranklist/{}".format(GROUP_ID))
 
         try:
             # 멤버 리스트 가져오기
             member_list = driver.find_elements(By.CSS_SELECTOR, '#ranklist > tbody > tr')
-
-            # 각 멤버의 정보를 json객체로 저장
-            members = []
 
             for member in member_list:
                 info = member.find_elements(By.TAG_NAME, 'td')
@@ -52,11 +59,14 @@ def member_crawler():
                     }
                 )
 
+            member_db['members'] = members
+
             # dump 저장 시 한글 깨짐 현상 해결: ensure_ascii=False
             with open('./data/member-db.json', 'w', encoding='utf-8') as outfile:
-                json.dump(members, outfile, ensure_ascii=False)
+                json.dump(member_db, outfile, ensure_ascii=False)
 
-            result_msg = "1"
+            result_msg = "Success"
+            result_obj['last_update_time'] = member_db['last_update_time']
 
         except NoSuchElementException:
             logger.debug("Can not parse the DOM element")
@@ -67,29 +77,39 @@ def member_crawler():
         logger.debug("Current Chrome Driver's version is lower than using Chrome Browser's version")
 
         result_msg = "SessionNotCreatedException - Current Chrome Driver's version is lower than using Chrome Browser's version"
+    finally:
 
-    return result_msg
+        result_obj['result_msg'] = result_msg
+
+    return result_obj
 
 
 def problem_crawler():
-
+    result_obj = {}
     result_msg = ""
+
+    # 문제 정보를 json 포맷으로 저장
+    solved_db = {}
+    solved_info = []  # solved_db['solved_info'] = solved_info
 
     options = webdriver.ChromeOptions()
     options.add_argument("headless")
 
     # apt install chromium-chromedriver
-    solved_list = []
 
     try:
         with open('./data/member-db.json', 'r', encoding='utf-8') as f:
-            members = json.load(f)
+            member_db = json.load(f)
 
             # print(members)
-            for member in members:
+            for member in member_db['members']:
                 member_id = member['id']
 
                 try:
+
+                    # 마지막 업데이트 시간 갱신
+                    solved_db['last_update_time'] = datetime.now().strftime(date_format)
+
                     driver = webdriver.Chrome(options=options)
                     driver.get("https://www.acmicpc.net/user/{}".format(member_id))
 
@@ -102,7 +122,7 @@ def problem_crawler():
 
                         # print(problems)
 
-                        solved_list.append(
+                        solved_info.append(
                             {
                                 'id': member_id,
                                 'solved': problems
@@ -119,20 +139,28 @@ def problem_crawler():
 
                     result_msg = "SessionNotCreatedException - Current Chrome Driver's version is lower than using Chrome Browser's version"
             # end of for
+
+            solved_db['solved_info'] = solved_info
+
         # close file
 
         # solved-db.json으로 저장
         with open('./data/solved-db.json', 'w', encoding='utf-8') as outfile:
-            json.dump(solved_list, outfile, ensure_ascii=False)
+            json.dump(solved_db, outfile, ensure_ascii=False)
 
-        result_msg = "1"
+        result_msg = "Success"
+        result_obj['last_update_time'] = solved_db['last_update_time']
 
     except FileNotFoundError:
         logger.debug("Failed to read Member DB file")
 
         result_msg = "FileNotFoundError - Failed to read Member DB file"
 
-    return result_msg
+    finally:
+
+        result_obj['result_msg'] = result_msg
+
+    return result_obj
 
 
 ## 1. 크롤링 스케줄 등록
