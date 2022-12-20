@@ -1,13 +1,13 @@
 <template>
     <div>
         <div id="menu">
-            <button class="menu-button" v-on:click="updateMember">Update Member</button>
-            <button class="menu-button" v-on:click="updateProblem">Update Solved Problems</button>
+            <button class="menu-button" v-on:click="updateMember" :title="memberLastUpdateTime">Update Member</button>
+            <button class="menu-button" v-on:click="updateProblem" :title="problemLastUpdateTime">Update Solved Problems</button>
         </div>
         <div id="main">
-            <h1 id="main-title">IS IT SOLVED?</h1>
+            <h1 id="main-title"><a class="link-tag" href="/">IS IT SOLVED?</a></h1>
             <div class="search-section">
-                <input type="text" @change="input" @keyup.enter="searchSolver" placeholder="BOJ 문제 번호">
+                <input type="text" @change="input" @keyup.enter="searchSolver" placeholder="BOJ 문제 번호를 입력하세요">
                 <!-- <button v-on:click="searchSolver">검색</button> -->
                 <img class="search-icon" src="../assets/search.png" v-on:click="searchSolver">
             </div>
@@ -18,7 +18,7 @@
             </p>
         </div>
         <div id="side">
-            <BoardView :searchResult="searchResult"></BoardView>
+            <BoardView :searchResult="searchResult" :problemNo="problemNo"></BoardView>
         </div>
     </div>
 </template>
@@ -57,7 +57,7 @@ export default {
     updateMember: function() {
         axios.post('/members/').then(res => {
 
-            this.memberLastUpdateTime = res.data.last_update_time
+            this.memberLastUpdateTime = "마지막 업데이트 시간: \n" + res.data.last_update_time
             console.log(this.memberLastUpdateTime)
 
 
@@ -66,11 +66,17 @@ export default {
     updateProblem: function() {
         axios.post('/problems').then(res => {
 
-            this.problemLastUpdateTime = res.data.last_update_time
+            this.problemLastUpdateTime = "마지막 업데이트 시간: \n" + res.data.last_update_time
             console.log(this.problemLastUpdateTime)
 
         })
     }
+  },
+  mounted() {
+    axios.get('lastUpdateTime').then(res => {
+            this.memberLastUpdateTime = "마지막 업데이트 시간: \n" + res.data.member_last_udt
+            this.problemLastUpdateTime = "마지막 업데이트 시간: \n" + res.data.problem_last_udt
+        })
   }
 }
 
