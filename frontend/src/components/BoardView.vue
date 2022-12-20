@@ -1,7 +1,7 @@
 <template>
     <div id="board">
-        <table>
-        <caption class="table-caption">SOLVER: {{searchResult.solver_num}}</caption>
+        <table v-if="searchResult.solvers != null">
+        <caption class="table-caption">Solver list for <b>{{problemNo}}</b>: {{searchResult.solver_num}}</caption>
           <thead>
             <tr>
               <th>No.</th>
@@ -22,11 +22,14 @@
 export default {
   name: 'BoardView',
   props: {
+    problemNo: {
+        type: String
+    },
     searchResult: {
         type: Object,
         default: () => {
             return {
-                solvers: [],
+                solvers: null,
                 solver_num: 0,
                 result: 0
             }
