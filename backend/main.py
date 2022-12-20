@@ -18,7 +18,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
 
@@ -34,7 +34,6 @@ async def home():
 
 @app.get("/problems/{problem_no}")
 async def get_solver(problem_no: str):
-    # do something
 
     result = search_solver(problem_no)
 
@@ -57,6 +56,7 @@ def update_problem():
     result = problem_crawler()
 
     return JSONResponse(result)
+
 
 # 마지막 업데이트 시간 얻기
 @app.get("/lastUpdateTime")
