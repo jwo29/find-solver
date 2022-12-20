@@ -1,5 +1,3 @@
-import json
-
 from datetime import datetime
 from fastapi import FastAPI
 
@@ -8,9 +6,6 @@ from starlette.middleware.cors import CORSMiddleware
 
 from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
-
-from selenium import webdriver
-from selenium.webdriver.common.by import By
 
 from service.boj_crawler import *
 from service.search_solver import search_solver
