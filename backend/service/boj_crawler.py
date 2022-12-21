@@ -1,5 +1,7 @@
 import json
 import logging
+import os.path
+
 import schedule
 
 from datetime import datetime
@@ -61,8 +63,11 @@ def member_crawler():
 
             member_db['members'] = members
 
+            if not os.path.isdir('./data'):
+                os.mkdir('./data')
+
             # dump 저장 시 한글 깨짐 현상 해결: ensure_ascii=False
-            with open('./data/member-db.json', 'w', encoding='utf-8') as outfile:
+            with open('./data/member-db.json', 'w+', encoding='utf-8') as outfile:
                 json.dump(member_db, outfile, ensure_ascii=False)
 
             result_msg = "Success"
@@ -144,8 +149,11 @@ def problem_crawler():
 
         # close file
 
+        if not os.path.isdir('./data'):
+            os.mkdir('./data')
+
         # solved-db.json으로 저장
-        with open('./data/solved-db.json', 'w', encoding='utf-8') as outfile:
+        with open('./data/solved-db.json', 'w+', encoding='utf-8') as outfile:
             json.dump(solved_db, outfile, ensure_ascii=False)
 
         result_msg = "Success"

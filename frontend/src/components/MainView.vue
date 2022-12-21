@@ -57,8 +57,11 @@ export default {
     updateMember: function() {
         axios.post('/members/').then(res => {
 
-            this.memberLastUpdateTime = "마지막 업데이트 시간: \n" + res.data.last_update_time
-            console.log(this.memberLastUpdateTime)
+            if (res.data.result_msg === 'Success') {
+                this.memberLastUpdateTime = "마지막 업데이트 시간: \n" + res.data.last_update_time
+                console.log(this.memberLastUpdateTime)
+            }
+            alert("Member Update: " + res.data.result_msg)
 
 
         })
@@ -66,8 +69,11 @@ export default {
     updateProblem: function() {
         axios.post('/problems').then(res => {
 
-            this.problemLastUpdateTime = "마지막 업데이트 시간: \n" + res.data.last_update_time
-            console.log(this.problemLastUpdateTime)
+            if (res.data.result_msg === 'Success') {
+                this.problemLastUpdateTime = "마지막 업데이트 시간: \n" + res.data.last_update_time
+                console.log(this.problemLastUpdateTime)
+            }
+            alert("Problem Update: " + res.data.result_msg)
 
         })
     }
