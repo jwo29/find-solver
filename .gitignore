@@ -1,0 +1,4 @@
+/services/frontend/node_modules
+/services/frontend/dist
+
+/services/backend/chromeDrivers
